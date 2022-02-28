@@ -1,15 +1,27 @@
 package main
 
 import (
-	"TEST-PROMO/transport"
+	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/khakim88/test-promo/common/config"
+	"github.com/khakim88/test-promo/transport"
+	"github.com/rs/zerolog/log"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+
+	port := config.GetString("SERVICE_PORT", "8080")
+
+	log.Info().Msgf("Start listening on port : %s", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), corsHandler())
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error when starting!!")
+	}
 
 }
 func initRouter() *mux.Router {

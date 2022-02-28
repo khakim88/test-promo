@@ -1,6 +1,5 @@
-module TEST-PROMO
+module github.com/khakim88/test-promo
 
 go 1.16
 
-require (
-)
+require github.com/gorilla/mux v1.8.0 // indirect
