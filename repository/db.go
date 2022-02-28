@@ -10,8 +10,3 @@ type DBConfiguration struct {
 	MaxConnection     int
 	MaxIdleConnection int
 }
-
-type PubSubConfiguration struct {
-	ProjectID   string
-	Credentials string
-}

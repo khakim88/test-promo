@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/khakim88/test-promo/common"
-	"github.com/khakim88/test-promo/commons/logger"
-	"github.com/khakim88/test-promo/constant"
+	"github.com/khakim88/test-promo/common/constant"
+	"github.com/khakim88/test-promo/common/logger"
 	"github.com/khakim88/test-promo/endpoint"
 
 	"github.com/khakim88/test-promo/repository"
@@ -16,7 +16,7 @@ import (
 	"github.com/khakim88/test-promo/service"
 	"github.com/khakim88/test-promo/transport/decode"
 
-	"github.com/khakim88/test-promo/commons/config"
+	"github.com/khakim88/test-promo/common/config"
 
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
@@ -39,7 +39,7 @@ func MakeHandler(r *mux.Router) http.Handler {
 		os.Exit(1)
 	}
 
-	svc := service.NewRecruitmentService(repo)
+	svc := service.NewPromoService(repo)
 
 	endpoint := endpoint.MakeEndpoints(&svc)
 
@@ -48,16 +48,15 @@ func MakeHandler(r *mux.Router) http.Handler {
 		kithttp.ServerBefore(kithttp.PopulateRequestContext),
 	}
 
-	listPromotionEndpoint := endpoint.ListPromotion
-	listPromotionEndpoint = listPromotionEndpoint
-	listPromotionHandler := kithttp.NewServer(
-		listPromotionEndpoint,
-		decode.DecodeListPromotionRequestHttp,
-		common.EncodeResponseWithCount,
+	validationPromotionEndpoint := endpoint.ValidationPromotion
+	validationPromotionHandler := kithttp.NewServer(
+		validationPromotionEndpoint,
+		decode.DecodeValidationPromotionRequest,
+		common.EncodeResponseWithData,
 		opts...,
 	)
 
-	r.Handle("/promotions", listPromotionHandler).Methods("GET")
+	r.Handle("/promotions/validate", validationPromotionHandler).Methods("POST")
 
 	return r
 }

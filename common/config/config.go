@@ -3,8 +3,58 @@ package config
 import (
 	"os"
 	"strconv"
-	"time"
+	"strings"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	godotenv.Load()
+}
+
+//Get get string configuration by defined environtment variable key and default value
+func Get(envKey, defaultVal string) string {
+	val := os.Getenv(envKey)
+	if val == "" {
+		val = defaultVal
+	}
+	return val
+}
+
+//GetInt get string configuration by defined environtment variable key and default value
+func GetInt(envKey string, defaultVal int) int {
+	str := os.Getenv(envKey)
+	if str == "" {
+		return defaultVal
+	}
+	val, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return defaultVal
+	}
+	return int(val)
+}
+
+//GetA get value in string by "," separator
+func GetA(envKey string, defaultVal []string) []string {
+	str := os.Getenv(envKey)
+	if str == "" {
+		return defaultVal
+	}
+	return strings.Split(str, ",")
+}
+
+//GetBool get boolean value configuration
+func GetBool(envKey string, defaultValue bool) bool {
+	str := os.Getenv(envKey)
+	if str == "" {
+		return defaultValue
+	}
+	val, err := strconv.ParseBool(str)
+	if err != nil {
+		return defaultValue
+	}
+	return val
+}
 
 // GetString returns config value for `key` as string. If no value is
 // found, returns `_default``
@@ -14,78 +64,4 @@ func GetString(key, _default string) string {
 		return _default
 	}
 	return val
-}
-
-// GetBool returns config value for `key` as bool. If no value is found,
-// returns `_default``
-func GetBool(key string, _default bool) bool {
-	val, err := strconv.ParseBool(os.Getenv(key))
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-// GetFloat returns config value for `key` as float64. If no value is
-// found, returns `_default`
-func GetFloat(key string, _default float64) float64 {
-	val, err := strconv.ParseFloat(os.Getenv(key), 64)
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-// GetInt returns config value for `key` as int. If no value is found,
-// returns _default
-func GetInt(key string, _default int) int {
-	val, err := strconv.Atoi(os.Getenv(key))
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-// GetInt64 returns config value for `key` as int64. If no value is found,
-// returns _default
-func GetInt64(key string, _default int64) int64 {
-	val, err := strconv.ParseInt(os.Getenv(key), 10, 64)
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-// GetUInt returns config value for `key` as uint64. If no value is found,
-// returns _default
-func GetUInt(key string, _default uint64) uint64 {
-	val, err := strconv.ParseUint(os.Getenv(key), 10, 64)
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-// GetDuration returns config value for `key` as duration. If no value is found,
-// returns _default
-func GetDuration(key string, _default time.Duration) time.Duration {
-	val, err := time.ParseDuration(os.Getenv(key))
-	if err != nil {
-		return _default
-	}
-	return val
-}
-
-var env string
-
-func IsProduction() bool {
-	env = getEnvType()
-	return env == "production"
-}
-
-func getEnvType() string {
-	if env == "" {
-		env = GetString("ENV", "development")
-	}
-	return env
 }

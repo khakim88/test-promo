@@ -1,6 +1,6 @@
 package service
 
-import "github.com/khakim88/test-promo/common/repository"
+import "github.com/khakim88/test-promo/repository"
 
 type promoService struct {
 	repo repository.DBReaderWriter

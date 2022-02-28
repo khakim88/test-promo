@@ -27,4 +27,7 @@ const (
 	HTTPHeaderContentType = "Content-Type"
 	//ApplicationJSONUTF8Type ...
 	ApplicationJSONUTF8Type = "application/json; charset=utf-8"
+
+	CONTENTTYPEJSONANDCHARSETUTF8VALUE = "application/json; charset=utf-8"
+	CONTENTTYPEKEY                     = "Content-Type"
 )
