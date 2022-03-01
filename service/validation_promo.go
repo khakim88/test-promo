@@ -4,12 +4,14 @@ import (
 	"context"
 	"math"
 
+	"github.com/khakim88/test-promo/common/logger"
 	"github.com/khakim88/test-promo/model"
 )
 
 func (rs *promoService) ValidatePromotionService(ctx context.Context, request *model.ValidatePromotionRequest) (resp *model.ValidatePromotionResponse, err error) {
 
 	//DEFAULT rule
+	response := new(model.ValidatePromotionResponse)
 	freeRaspBerry := 0
 	var discountAmount, priceAmount float64
 	for _, prod := range request.ProductCart {
@@ -28,37 +30,40 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 			if freeRaspBerry > 0 && prod.Quantity > 0 {
 				prodRaspBerry, _ := rs.repo.GetProductBySKU(prod.SkuProduct)
 				//discount price raspberry
-				priceAmount = priceAmount + (prodRaspBerry.Price * float64(prodRaspBerry.Quantity))
+				priceAmount = priceAmount + (prodRaspBerry.Price * float64(prod.Quantity))
 				discountAmount = discountAmount + (prodRaspBerry.Price * float64(prod.Quantity))
 			}
 
 		}
 		//buying 3 google pay 2 price / free 1
 		if prod.SkuProduct == "120P90" {
-			if prod.Quantity > 3 {
+			if prod.Quantity >= 3 {
 				prodGoogle, _ := rs.repo.GetProductBySKU(prod.SkuProduct)
 				calc := float64(prod.Quantity) / 3
-				disc := math.Floor(calc) * prodGoogle.Price
-				priceAmount = priceAmount + (prodGoogle.Price * float64(prodGoogle.Quantity))
-				discountAmount = discountAmount + disc
+
+				c := math.Floor(calc)
+				disc := c * prodGoogle.Price
+				priceAmount = priceAmount + (prodGoogle.Price * float64(prod.Quantity))
+				discountAmount = (discountAmount + disc)
+				logger.Info("[CEIL]:", math.Floor(calc), "[PRICEAMOUNT]:", priceAmount, "[disc]:", disc, "[discountAmount]:", discountAmount)
 
 			}
 		}
 		//buying more than 3 alexa
 		if prod.SkuProduct == "A304SD" {
-			if prod.Quantity > 3 {
+			if prod.Quantity >= 3 {
 				prodAlexa, _ := rs.repo.GetProductBySKU(prod.SkuProduct)
 				price := prodAlexa.Price * float64(prodAlexa.Quantity)
 				disc := price * 0.1
-				priceAmount = priceAmount + (prodAlexa.Price * float64(prodAlexa.Quantity))
-				discountAmount = discountAmount + disc
+				priceAmount = priceAmount + (prodAlexa.Price * float64(prod.Quantity))
+				discountAmount = (discountAmount + disc)
 
 			}
 		}
 
 	}
-	resp.DiscountAmount = discountAmount
-	resp.TotalPrice = priceAmount - discountAmount
+	response.DiscountAmount = discountAmount
+	response.TotalPrice = (priceAmount - discountAmount)
 
-	return resp, nil
+	return response, nil
 }

@@ -12,7 +12,7 @@ func (p *postgresConn) GetProductBySKU(sku string) (*model.Product, error) {
 				name,
 				price,
 				qty
-			FROM product
+			FROM products
 			WHERE sku = $1`
 
 	err := p.db.QueryRow(query, sku).Scan(

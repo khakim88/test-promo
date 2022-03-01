@@ -43,12 +43,8 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 				Name:       "RaspBerryPI",
 				Price:      30.00,
 			}, nil),
-			// mockRepo.EXPECT().GetProductBySKU("43N23P").Return(model.Product{
-			// 	SkuProduct: "43N23P",
-			// 	Name:       "MacBookPro",
-			// 	Price:      5399.99,
-			// }, nil),
 			nil,
+
 			args{ctx: printCtx, request: &model.ValidatePromotionRequest{ProductCart: []model.ProductItem{
 				{
 					SkuProduct: "43N23P",
@@ -61,6 +57,50 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 			&model.ValidatePromotionResponse{
 				TotalPrice:     5399.99,
 				DiscountAmount: 30.00,
+			},
+			true,
+		},
+		{
+			"googl home > 3",
+			mockRepo.EXPECT().GetProductBySKU("120P90").Return(&model.Product{
+				SkuProduct: "120P90",
+				Name:       "google home",
+				Price:      49.99,
+			}, nil),
+			nil,
+			nil,
+
+			args{ctx: printCtx, request: &model.ValidatePromotionRequest{ProductCart: []model.ProductItem{
+				{
+					SkuProduct: "120P90",
+					Quantity:   3,
+				},
+			}}},
+			&model.ValidatePromotionResponse{
+				TotalPrice:     99.98,
+				DiscountAmount: 49.99,
+			},
+			true,
+		},
+		{
+			"A304SD > 3 =10%",
+			mockRepo.EXPECT().GetProductBySKU("A304SD").Return(&model.Product{
+				SkuProduct: "A304SD",
+				Name:       "Alexa Speaker",
+				Price:      109.50,
+			}, nil),
+			nil,
+			nil,
+
+			args{ctx: printCtx, request: &model.ValidatePromotionRequest{ProductCart: []model.ProductItem{
+				{
+					SkuProduct: "A304SD",
+					Quantity:   3,
+				},
+			}}},
+			&model.ValidatePromotionResponse{
+				TotalPrice:     295.65,
+				DiscountAmount: 32.85,
 			},
 			true,
 		},
