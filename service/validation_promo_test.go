@@ -33,21 +33,22 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 		//macbook pro & raspberry pi exp total 5.39
 		{
 			"test macbook & RaspBerry Pi",
-			mockRepo.EXPECT().GetProductBySKU("43N23P").Return(model.Product{
+			mockRepo.EXPECT().GetProductBySKU("43N23P").Return(&model.Product{
 				SkuProduct: "43N23P",
 				Name:       "MacBookPro",
 				Price:      5399.99,
 			}, nil),
-			mockRepo.EXPECT().GetProductBySKU("43N23P").Return(model.Product{
-				SkuProduct: "43N23P",
-				Name:       "MacBookPro",
-				Price:      5399.99,
+			mockRepo.EXPECT().GetProductBySKU("234234").Return(&model.Product{
+				SkuProduct: "234234",
+				Name:       "RaspBerryPI",
+				Price:      30.00,
 			}, nil),
-			mockRepo.EXPECT().GetProductBySKU("43N23P").Return(model.Product{
-				SkuProduct: "43N23P",
-				Name:       "MacBookPro",
-				Price:      5399.99,
-			}, nil),
+			// mockRepo.EXPECT().GetProductBySKU("43N23P").Return(model.Product{
+			// 	SkuProduct: "43N23P",
+			// 	Name:       "MacBookPro",
+			// 	Price:      5399.99,
+			// }, nil),
+			nil,
 			args{ctx: printCtx, request: &model.ValidatePromotionRequest{ProductCart: []model.ProductItem{
 				{
 					SkuProduct: "43N23P",
@@ -58,7 +59,8 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 				},
 			}}},
 			&model.ValidatePromotionResponse{
-				TotalPrice: 5399.99,
+				TotalPrice:     5399.99,
+				DiscountAmount: 30.00,
 			},
 			true,
 		},
