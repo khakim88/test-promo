@@ -24,6 +24,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 			//get free
 			freeRaspBerry = int(prod.Quantity)
 			TotalPrice = priceAmount - discountAmount
+			TotalPrice = (math.Ceil(TotalPrice*100) / 100)
 
 		}
 		//each macbookpro free raspberry
@@ -34,6 +35,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 				priceAmount = priceAmount + (prodRaspBerry.Price * float64(prod.Quantity))
 				discountAmount = discountAmount + (prodRaspBerry.Price * float64(prod.Quantity))
 				TotalPrice = priceAmount - discountAmount
+				TotalPrice = (math.Ceil(TotalPrice*100) / 100)
 			}
 
 		}
@@ -62,7 +64,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 				priceAmount = priceAmount + price
 				discountAmount = (discountAmount + disc)
 				TotalPrice = priceAmount - discountAmount
-
+				TotalPrice = (math.Ceil(TotalPrice*100) / 100)
 			}
 		}
 
