@@ -58,7 +58,7 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 				TotalPrice:     5399.99,
 				DiscountAmount: 30.00,
 			},
-			true,
+			false,
 		},
 		{
 			"googl home > 3",
@@ -80,7 +80,7 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 				TotalPrice:     99.98,
 				DiscountAmount: 49.99,
 			},
-			true,
+			false,
 		},
 		{
 			"A304SD > 3 =10%",
@@ -102,7 +102,7 @@ func Test_promoService_ValidatePromotionService(t *testing.T) {
 				TotalPrice:     295.65,
 				DiscountAmount: 32.85,
 			},
-			true,
+			false,
 		},
 	}
 	for _, tt := range tests {

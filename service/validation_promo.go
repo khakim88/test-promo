@@ -53,9 +53,9 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 		if prod.SkuProduct == "A304SD" {
 			if prod.Quantity >= 3 {
 				prodAlexa, _ := rs.repo.GetProductBySKU(prod.SkuProduct)
-				price := prodAlexa.Price * float64(prodAlexa.Quantity)
+				price := prodAlexa.Price * float64(prod.Quantity)
 				disc := price * 0.1
-				priceAmount = priceAmount + (prodAlexa.Price * float64(prod.Quantity))
+				priceAmount = priceAmount + price
 				discountAmount = (discountAmount + disc)
 
 			}
