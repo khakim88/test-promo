@@ -13,7 +13,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 	//DEFAULT rule
 	response := new(model.ValidatePromotionResponse)
 	freeRaspBerry := 0
-	var discountAmount, priceAmount float64
+	var discountAmount, priceAmount, TotalPrice float64
 	for _, prod := range request.ProductCart {
 		if prod.SkuProduct == "43N23P" {
 
@@ -23,6 +23,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 			priceAmount = priceAmount + p
 			//get free
 			freeRaspBerry = int(prod.Quantity)
+			TotalPrice = priceAmount - discountAmount
 
 		}
 		//each macbookpro free raspberry
@@ -32,6 +33,7 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 				//discount price raspberry
 				priceAmount = priceAmount + (prodRaspBerry.Price * float64(prod.Quantity))
 				discountAmount = discountAmount + (prodRaspBerry.Price * float64(prod.Quantity))
+				TotalPrice = priceAmount - discountAmount
 			}
 
 		}
@@ -45,7 +47,9 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 				disc := c * prodGoogle.Price
 				priceAmount = priceAmount + (prodGoogle.Price * float64(prod.Quantity))
 				discountAmount = (discountAmount + disc)
-				logger.Info("[CEIL]:", math.Floor(calc), "[PRICEAMOUNT]:", priceAmount, "[disc]:", disc, "[discountAmount]:", discountAmount)
+				TotalPrice = priceAmount - discountAmount
+				TotalPrice = (math.Ceil(TotalPrice*100) / 100)
+				logger.Info("[CEIL]:", math.Floor(calc), "[PRICEAMOUNT]:", priceAmount, "[disc]:", disc, "[discountAmount]:", discountAmount, "[TotalPrice]:", TotalPrice)
 
 			}
 		}
@@ -57,13 +61,15 @@ func (rs *promoService) ValidatePromotionService(ctx context.Context, request *m
 				disc := price * 0.1
 				priceAmount = priceAmount + price
 				discountAmount = (discountAmount + disc)
+				TotalPrice = priceAmount - discountAmount
 
 			}
 		}
 
 	}
+
 	response.DiscountAmount = discountAmount
-	response.TotalPrice = (priceAmount - discountAmount)
+	response.TotalPrice = TotalPrice
 
 	return response, nil
 }
