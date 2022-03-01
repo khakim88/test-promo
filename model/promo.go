@@ -1,8 +1,7 @@
 package model
 
 type ValidatePromotionRequest struct {
-	PromotionCode string        `json:"promotion_code"`
-	ProductCart   []ProductItem `json:"product_cart"`
+	ProductCart []ProductItem `json:"product_cart"`
 }
 
 type ProductItem struct {
